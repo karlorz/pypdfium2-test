@@ -1,3 +1,4 @@
 [submodule "pypdfium2"]
 	path = pypdfium2
 	url = https://github.com/karlorz/pypdfium2.git
+	branch = devbuild

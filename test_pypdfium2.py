@@ -1,17 +1,20 @@
-  # Direct import (recommended)
-from pypdfium2._library_scope import initialize_with_fonts
+#!/usr/bin/env python3
+
+# Import pypdfium2 helpers
 from pypdfium2._helpers.document import PdfDocument
 
-# Initialize with local FreeType fonts
-font_paths = [
-    "/System/Library/Fonts/Supplemental/Songti.ttc"  # For Chinese
-]
+def main():
+    # Open the PDF document
+    pdf = PdfDocument("input/page5.pdf")
 
-initialize_with_fonts(font_paths)
+    # Render first page
+    page = pdf[0]
+    bitmap = page.render(scale=2.0)  # 2x scale for good quality
+    image = bitmap.to_pil()
+    image.save("output/page5_page_1.png")
 
-# Use pypdfium2 normally - it will now use your local fonts
-pdf = PdfDocument("input/page5.pdf")
-page = pdf[0]
-bitmap = page.render(scale=2.0)
-image = bitmap.to_pil()
-image.save("output/page5_page_1.png")
+    print("PDF page converted successfully!")
+    print(f"Page rendered at {bitmap.width}x{bitmap.height} pixels")
+
+if __name__ == "__main__":
+    main()

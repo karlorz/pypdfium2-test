@@ -1,13 +1,24 @@
 #!/usr/bin/env python3
 """
 Simple PDF to Image Converter
-Basic conversion using default pypdfium2 settings
+Basic conversion using pypdfium2 with custom font support (devbuild)
 """
 
 import sys
 import os
 from PIL import Image
-import pypdfium2 as pdfium
+from pypdfium2._library_scope import initialize_with_fonts
+from pypdfium2._helpers.document import PdfDocument
+
+
+# Initialize PDFium with custom fonts for better Chinese text rendering
+FONT_PATHS = [
+    "/System/Library/Fonts/Supplemental/Songti.ttc",  # Chinese fonts
+    "/System/Library/Fonts/Supplemental/"  # Font directory
+]
+
+# Initialize once at module level
+initialize_with_fonts(FONT_PATHS)
 
 
 class PDFConverter:
@@ -20,7 +31,7 @@ class PDFConverter:
         """Load PDF file"""
         if not os.path.exists(pdf_path):
             raise FileNotFoundError(f"PDF file not found: {pdf_path}")
-        self.pdf = pdfium.PdfDocument(pdf_path)
+        self.pdf = PdfDocument(pdf_path)
         return len(self.pdf)
 
     def convert_to_image(self, pdf_path, output_path=None, dpi=150, page=0):
@@ -86,18 +97,23 @@ class PDFConverter:
 
 def main():
     """Main function - Simple PDF to PNG conversion"""
-    if len(sys.argv) < 2:
-        print("Simple PDF to PNG Converter")
-        print("Usage: python simple_pdf_to_image.py <pdf_file> [output_path] [dpi] [page_number]")
-        print("")
-        print("Examples:")
-        print("  python simple_pdf_to_image.py input/document.pdf")
-        print("  python simple_pdf_to_image.py input/document.pdf output.png 150")
-        print("  python simple_pdf_to_image.py input/document.pdf output.png 150 0")
-        print("  python simple_pdf_to_image.py input/document.pdf --all [output_dir]")
-        sys.exit(1)
+    # Default PDF file if no arguments provided
+    pdf_path = "input/page5.pdf"
 
-    pdf_path = sys.argv[1]
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ['-h', '--help']:
+            print("Simple PDF to PNG Converter")
+            print("Usage: python main.py [pdf_file] [output_path] [dpi] [page_number]")
+            print("")
+            print("Examples:")
+            print("  python main.py input/document.pdf")
+            print("  python main.py input/document.pdf output.png 150")
+            print("  python main.py input/document.pdf output.png 150 0")
+            print("  python main.py input/document.pdf --all [output_dir]")
+            print("  python main.py  # uses input/page5.pdf")
+            sys.exit(0)
+        else:
+            pdf_path = sys.argv[1]
 
     # Parse arguments
     output_path = None
