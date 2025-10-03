@@ -5,7 +5,7 @@ description = "PDF to Image Converter with Enhanced Font Support"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "pypdfium2 @ file:///Users/karlchow/Desktop/code/pypdfium2-test/pypdfium2",
+    "pypdfium2 @ file://./pypdfium2/src/pypdfium2",
     "pillow>=10.0.0",
     "fonttools>=4.60.1",
     "pymupdf>=1.26.4",
